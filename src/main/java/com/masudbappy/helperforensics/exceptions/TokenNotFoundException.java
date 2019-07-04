@@ -1,6 +1,4 @@
-package com.masudbappy.helperforensics.controller;
-
-import com.masudbappy.helperforensics.exceptions.TokenException;
+package com.masudbappy.helperforensics.exceptions;
 
 public class TokenNotFoundException extends TokenException {
     public TokenNotFoundException(String message) {

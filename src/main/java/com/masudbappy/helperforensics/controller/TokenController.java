@@ -23,7 +23,7 @@ public class TokenController {
 
     @RequestMapping(value = "/media/resgistered_token/", method = RequestMethod.GET)
     @ResponseBody
-    public User userVarification(@RequestParam(value = "token", required = true) String token) throws Exception {
+    public User userVarificationFromGoogle(@RequestParam(value = "token", required = true) String token) throws Exception {
         try {
             System.out.println("Received Token");
             return userService.saveUser(token);

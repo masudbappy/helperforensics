@@ -4,7 +4,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.masudbappy.helperforensics.controller.TokenNotFoundException;
+import com.masudbappy.helperforensics.exceptions.TokenNotFoundException;
 import com.masudbappy.helperforensics.models.User;
 import com.masudbappy.helperforensics.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,22 +54,20 @@ public class UserService {
 
                 // Get profile information from payload
                 String email = payload.getEmail();
-                boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
                 String name = (String) payload.get("name");
                 String pictureUrl = (String) payload.get("picture");
-                String locale = (String) payload.get("locale");
-                String familyName = (String) payload.get("family_name");
-                String givenName = (String) payload.get("given_name");
 
                 // Use or store profile information
                 // ...
                 String tokenValue = generateToken();
-                user = new User();
-                user.setToken(tokenValue);
-                user.setName(name);
-                user.setEmail(email);
-                user.setPictureUrl(pictureUrl);
-                return userRepository.save(user);
+                if (!userRepository.findByUsername(user.getName()).equals(name)) {
+                    user = new User();
+                    user.setToken(tokenValue);
+                    user.setName(name);
+                    user.setEmail(email);
+                    user.setPictureUrl(pictureUrl);
+                    return userRepository.save(user);
+                }
 
             } else {
                 System.out.println("Invalid ID token.");
@@ -87,7 +85,7 @@ public class UserService {
         return base64Encoder.encodeToString(randomBytes);
     }
 
-    public List<User> getUser(){
+    public List<User> getUser() {
         return userRepository.findAll();
     }
 }
